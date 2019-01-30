@@ -2,7 +2,8 @@
   "name": "web-auth",
   "version": "1.0.0",
   "description": "web 身份验证 demo",
-  "main": "index.js",
+  "main": "./server/app.js",
+  "repository": "https://github.com/beatacao/web-auth.git",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "supervisor ./server/app.js"
