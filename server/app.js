@@ -1,16 +1,15 @@
+var config = require('./config')
 var express = require('express')
+var router = require('./router')
+
 var app = express()
 
-app.get('/auth_basic', function(req, res){
-    if(!req.headers.authorization){
-        res.append('WWW-Authenticate', 'Basic realm="Secure Area"')
-        res.status(401).end()
-    }else{
-        res.send('ok')
-    }
-    
-})
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html')
+app.set('views', [__dirname + '/../client'])
 
-app.listen(5566, function(){
-    console.log('----- NodeJS Server started on port 5566, press Ctrl-C to terminate.-----')
+app.use('/', router)
+
+app.listen(config.port, function(){
+    console.log('----- NodeJS Server started on port ' + config.port + ', press Ctrl-C to terminate.-----')
 })

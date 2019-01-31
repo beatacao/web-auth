@@ -21,12 +21,13 @@
 ![basic2](./basic2.jpg)
 
 > 优势  
-> 1. 简单
+> 1. 简单，几乎所有流行网页浏览器都支持
 > 劣势   
-> 1. 不安全
+> 1. 明文传输，对客户端和服务器端传递的信息均无保护机制，很少在公开访问的网站应用。编码这一步骤的目的并不是安全与隐私，而是为将用户名和口令中的不兼容的字符转换为均与HTTP协议兼容的字符集。  
+> 2. 无登出机制；浏览器会缓存登录信息，但没有一种机制用于服务器指导客户端丢弃缓存信息。（关闭浏览器或用错误的认证信息替换掉已有的认证信息）
 
 #### 摘要认证   
-> 关键字  
+> 关键技术  
 
 > 优势 
 
@@ -61,6 +62,7 @@ http认证： 基本认证，摘要认证
         参考：
         https://zh.wikipedia.org/wiki/HTTP%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81   
         http://www.cnblogs.com/xiaohuochai/p/6184913.html  
+        http://www.nanodocumet.com/?p=6  
 
         ps: base64 http协议兼容， 如路由器网页管理接口，没有有效的方式让用户退出？
 
@@ -95,7 +97,7 @@ oauth
 
     参考：  
     https://www.xncoding.com/2017/03/29/web/oauth2.html  
-    https://www.jianshu.com/p/a047176d9d65
+    https://www.jianshu.com/p/a047176d9d65   
 
 
 sso:    
