@@ -1,8 +1,22 @@
 var config = require('./config')
 var express = require('express')
 var router = require('./router')
+var cookieParser = require('cookie-parser')
+var session = require('express-session')
+var bodyParser = require('body-parser')
 
 var app = express()
+
+app.use(cookieParser())
+app.use(session({
+    secret: 'site_secret'
+}))
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html')

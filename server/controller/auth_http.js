@@ -15,6 +15,11 @@ var getDigestInfo = function(auth){
     return digestObj
 }
 
+var realmConfig = {
+    basic: 'docs',
+    digest: 'articles'
+}
+
 module.exports = {
     basic: function(req, res, next){
         var isAuthorized = false
@@ -34,7 +39,7 @@ module.exports = {
         }
         if(!isAuthorized){
             res.statusCode = 401;
-            res.setHeader('WWW-Authenticate', 'Basic realm="'+ req.path +'"');
+            res.setHeader('WWW-Authenticate', 'Basic realm="'+ realmConfig.basic +'"');
             res.end()
         }
         next()
@@ -46,9 +51,9 @@ module.exports = {
             var digestObj = getDigestInfo(authorization)
             var user = service_user.getUsers(digestObj.username)
             var digestAuthObj = {}
-            var realm = req.path
+            var realm = realmConfig.digest
 
-            digestAuthObj.ha1 = md5UsingCrypto(digestObj.username + ':' + digestObj.realm + ':' + user.password);
+            digestAuthObj.ha1 = md5UsingCrypto(digestObj.username + ':' + realm + ':' + user.password);
             digestAuthObj.ha2 = md5UsingCrypto(req.method + ':' + digestObj.uri);
         
             var resp = md5UsingCrypto([digestAuthObj.ha1, digestObj.nonce, digestObj.nc, digestObj.cnonce, digestObj.qop, digestAuthObj.ha2].join(':'));
@@ -62,8 +67,9 @@ module.exports = {
         if(!isAuthorized){
             var nonce = md5UsingCrypto(Math.random() + req.path)
             var opaque = md5UsingCrypto(req.path)
+            realmConfig.digest = realmConfig.digest.length>0 ? realmConfig.digest : req.path
             res.statusCode = 401
-            res.setHeader('WWW-Authenticate', 'Digest realm="' + req.path + '", qop="auth", nonce="' + nonce + '", opaque="' + opaque + '"')
+            res.setHeader('WWW-Authenticate', 'Digest realm="' + realmConfig.digest + '", qop="auth", nonce="' + nonce + '", opaque="' + opaque + '"')
             res.end();
         }
         next()
