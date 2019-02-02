@@ -1,7 +1,9 @@
 var express = require('express')
 var auth_http = require('./controller/auth_http')
 var auth_session = require('./controller/auth_session')
+var auth_token = require('./controller/auth_token')
 var service_user = require('./service/users')
+var jwt = require('jsonwebtoken')
 
 var router = express.Router()
 
@@ -17,21 +19,20 @@ router.get('/comments', auth_session.session, function(req, res){
     res.end('comments')
 })
 
+router.get('/photos', auth_token.tokenVerify, function(req, res){
+    res.end('photos')
+})
+
 router.post('/login', function(req, res, next){
     var user = service_user.getUsers(req.body.username)
     if(req.body.username === user.name && req.body.password === user.password){
-        req.session.regenerate(function(err){
-            if(err){
-                return res.end('登录失败')
-            }
-            req.session.user = user
-            
-            if(req.headers.referer){
-                res.redirect(req.headers.referer)
-            }else{
-                res.end('登录成功')
-            }
-        })
+        if(req.headers.referer.indexOf('/comments') > -1){
+            auth_session.sessionGenerate(req, res, next)
+        }
+        if(req.headers.referer.indexOf('/photos') > -1){
+            auth_token.tokenSign(req, res, next)
+        }
+        res.end('登录成功')
     }else{
         res.render('login', {'error': '密码错误'})
     }
