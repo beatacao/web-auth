@@ -1,6 +1,6 @@
 module.exports = {
     session: function(req, res, next){
-        if(!req.cookies['SESSIONID'] || req.cookies['SESSIONID'] !== req.sessionID ){
+        if(!req.signedCookies['connect.sid'] || req.signedCookies['connect.sid'] !== req.sessionID ){
             res.render('login', {error: null})
         }
         next()

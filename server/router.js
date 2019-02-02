@@ -25,7 +25,6 @@ router.post('/login', function(req, res, next){
                 return res.end('登录失败')
             }
             req.session.user = user
-            res.cookie('SESSIONID', req.sessionID)
             
             if(req.headers.referer){
                 res.redirect(req.headers.referer)

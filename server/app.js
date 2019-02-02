@@ -7,7 +7,7 @@ var bodyParser = require('body-parser')
 
 var app = express()
 
-app.use(cookieParser())
+app.use(cookieParser('site_secret'))
 app.use(session({
     secret: 'site_secret'
 }))
