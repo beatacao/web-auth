@@ -32,7 +32,7 @@ router.post('/login', function(req, res, next){
         if(req.headers.referer.indexOf('/photos') > -1){
             auth_token.tokenSign(req, res, next)
         }
-        res.end('登录成功')
+        res.redirect(req.headers.referer)
     }else{
         res.render('login', {'error': '密码错误'})
     }

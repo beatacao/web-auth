@@ -4,7 +4,6 @@ var secret = 'site_secret'
 
 module.exports = {
     tokenVerify: function(req, res, next){
-        console.log(req.signedCookies)
         if(!req.signedCookies['token']){
             res.render('login', {error: null})
             return
