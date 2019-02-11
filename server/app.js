@@ -1,13 +1,13 @@
 var config = require('./config')
 var express = require('express')
 var router = require('./router')
-// var cookieParser = require('cookie-parser')
+var cookieParser = require('cookie-parser')
 var session = require('express-session')
 var bodyParser = require('body-parser')
 
 var app = express()
 
-// app.use(cookieParser('site_secret'))
+app.use(cookieParser('site_secret'))
 app.use(session({
     secret: 'site_secret',
     resave: false,
