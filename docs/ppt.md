@@ -50,14 +50,16 @@
 > cookie      
 > 关键技术点： Set-cookie, Cookie    
 
-> 流程： 
+> 流程：   
+
 ![cookie](./cookie.png)   
 
 > 优势  
-> 简单，由服务器和浏览器完成保存和验证工作，无需前端参与；
+> 简单，由服务器和浏览器完成保存和验证工作，无需前端参与, 无需服务器保存状态
 
 > 劣势  
 > cookie 容易被盗取和篡改  
+> 放篡改： 签名
 
 > session   
 > 关键技术点： 
@@ -73,8 +75,9 @@
 > 3. 跨域，因为需要cookie 保存sessionid    
 > 4. cookie 原生移动端应用不支持cookie      
 
-> token      
+> token(jwt)    
 > 关键技术点： JSON, base64Url, 签名算法   
+> base64(header).base64(json payload).signature   
 
 > 流程  
 ![token](./token.png) 
@@ -90,6 +93,8 @@
 2. TOKEN 一旦生成并发送到客户端，在有效期内，无法通过服务器端指导客户端删除：缩短token有效时间   
 3. 重放攻击：缩短token 有效时间   
 4. 中间人攻击： token 通过 HTTPS 传输   
+5. 无法在服务器进行用户管理：统计、追踪用户   
+6. token 大小难以控制    
 
 > jwt  
 > 1. 默认使用 HS256 算法： 对称加密   
@@ -98,9 +103,28 @@
 
 ## 应用场景及常见解决方案  
 
-    1、单系统     
-    2、多系统   
-    3、开放平台（oAuth）    
+1、单应用     
+
+    简单应用，无集群同步：session    
+    复杂应用，多级群同步： 
+
+2、多应用: 系统的复杂性，不能让用户承担     
+
+```  
+sso: 抽离出各个系统的用户认证服务，形成独立的认证中心，单点登录，单点登出    
+```
+> 登录流程   
+
+![login](./ssologin.png)    
+
+> 登出流程   
+
+![logout](./ssologout.png)   
+
+
+3、开放平台（oAuth）    
+
+
 
 
 
@@ -134,7 +158,8 @@ cookie/session/token
     https://harttle.land/2015/08/10/cookie-session.html    cookie 容易被篡改；session: 防止篡改，但是被盗用后，可以重放   
     https://www.jianshu.com/p/c33f5777c2eb    cookie/session: 有状态（服务器或浏览器端需要一直保存状态），token无状态  
     https://blog.csdn.net/Jmilk/article/details/55686267   session，token优缺点   
-    https://segmentfault.com/a/1190000013010835#articleHeader0    token无状态的特点，可以做到分离认证；业务服务器不受信的情况下（非对称加密，申请注册）
+    https://segmentfault.com/a/1190000013010835#articleHeader0    token无状态的特点，可以做到分离认证；业务服务器不受信的情况下（非对称加密，申请注册）  
+    https://stackoverflow.com/questions/35291573/csrf-protection-with-json-web-tokens   存储方式：localstorage/cookie
 
 
 jwt

@@ -21,7 +21,7 @@ module.exports = {
         var user = service_user.getUsers(req.body.username)  
         if(user.name === req.body.username && user.password === req.body.password){
             var token = jwt.sign(user, secret, {expiresIn: 60*10})
-            res.cookie('token', token, {signed: true, maxAge: 1000*60*10})
+            res.cookie('token', token, {signed: true, maxAge: 1000*60*10, httpOnly: true, secure: true, sameSite: 'strict'})
         }
         return true
     }

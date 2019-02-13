@@ -2,8 +2,11 @@ var express = require('express')
 var auth_http = require('./controller/auth_http')
 var auth_session = require('./controller/auth_session')
 var auth_token = require('./controller/auth_token')
+var sso_client = require('./controller/sso_client')
+var sso_server = require('./controller/sso_server')
 var service_user = require('./service/users')
 var jwt = require('jsonwebtoken')
+var http = require('http')
 
 var router = express.Router()
 
@@ -48,6 +51,71 @@ router.get('/logout', function(req, res, next){
         res.clearCookie('connect.sid');
         res.redirect('/comments');
     });
+})
+
+var subSites = [
+    'www.sso-client1.com',
+    'www.sso-client2.com',
+]
+
+// sso client
+router.get(/^\/page\/(.)+$/, sso_client.verify, function(req, res){
+    res.send('<p>site: "'+req.headers.host+'"</p><p>path: "'+req.url+'"</p><p><a href="http://www.sso-server.com:5566/sso-server/logout">登出</a></p>')
+})
+router.post('/sso-client/logout', function(req, res, next){
+    res.clearCookie('connect.sid')
+    res.end()
+})
+
+// sso server
+router.get('/sso-server/login', function(req, res){
+    
+    // 检查是否已从其他系统登录过    
+    if(req.session.isLogin) {
+        if(!req.query || !req.query.site){
+            res.end('已登录')
+        }
+        var url = 'http://' + req.query.site
+        res.redirect(url + '?token=' + req.sessionID)
+    }
+
+    // 如果没登录过，返回登录页面
+    res.render('login', {error: null})
+})
+
+router.post('/sso-server/login', function(req, res, next){
+    var user = service_user.getUsers(req.body.username)
+    if(req.body.username === user.name && req.body.password === user.password){
+        // 设置全局session   
+        req.session.isLogin = true
+        res.cookie('connect.sid', req.sessionid, {signed: true, maxAge: 1000*60*10, httpOnly: true, secure: true, sameSite: 'strict'})
+        
+        if(req.headers.referer.split('?site=')[1]){
+            var url = 'http://' + req.headers.referer.split('?site=')[1]
+            res.redirect(url + '?token=' + req.sessionID)
+        }else{
+            res.end('已登录')
+        }
+        
+    }else{
+        res.render('login', {'error': '密码错误'})
+    }
+})
+
+router.get('/sso-server/logout', function(req, res, next){
+    res.clearCookie('connect.sid')
+    // 清除子站sessionid
+    subSites.forEach(function(host){
+        http.request({
+            hostname: host,
+            port: 5566,
+            path: '/sso-client/logout',
+            method: 'POST'
+        })
+    }, function(res){
+        console.log('success')
+    })
+    res.end('已登出')
 })
 
 module.exports = router
