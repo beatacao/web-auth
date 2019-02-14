@@ -7,6 +7,7 @@ var sso_server = require('./controller/sso_server')
 var service_user = require('./service/users')
 var jwt = require('jsonwebtoken')
 var http = require('http')
+var axios = require('axios')
 
 var router = express.Router()
 
@@ -59,12 +60,13 @@ var subSites = [
 ]
 
 // sso client
-router.get(/^\/page\/(.)+$/, sso_client.verify, function(req, res){
+router.get(/^\/page\/(.)+$/, sso_client.verify(), function(req, res){
     res.send('<p>site: "'+req.headers.host+'"</p><p>path: "'+req.url+'"</p><p><a href="http://www.sso-server.com:5566/sso-server/logout">登出</a></p>')
 })
-router.post('/sso-client/logout', function(req, res, next){
+router.get('/sso-client/logout', function(req, res, next){
+    console.log(1)
     res.clearCookie('connect.sid')
-    res.end()
+    return res.end()
 })
 
 // sso server
@@ -76,6 +78,7 @@ router.get('/sso-server/login', function(req, res){
             res.end('已登录')
         }
         var url = 'http://' + req.query.site
+        
         res.redirect(url + '?token=' + req.sessionID)
     }
 
@@ -102,18 +105,13 @@ router.post('/sso-server/login', function(req, res, next){
     }
 })
 
+router.get('/sso-server/verifytoken', sso_server.verifytoken)
+
 router.get('/sso-server/logout', function(req, res, next){
     res.clearCookie('connect.sid')
     // 清除子站sessionid
     subSites.forEach(function(host){
-        http.request({
-            hostname: host,
-            port: 5566,
-            path: '/sso-client/logout',
-            method: 'POST'
-        })
-    }, function(res){
-        console.log('success')
+        axios.get('http://' + host + ':5566/sso-client/logout')
     })
     res.end('已登出')
 })
