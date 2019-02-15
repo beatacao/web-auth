@@ -61,10 +61,9 @@ var subSites = [
 
 // sso client
 router.get(/^\/page\/(.)+$/, sso_client.verify(), function(req, res){
-    res.send('<p>site: "'+req.headers.host+'"</p><p>path: "'+req.url+'"</p><p><a href="http://www.sso-server.com:5566/sso-server/logout">登出</a></p>')
+    return res.send('<p>site: "'+req.headers.host+'"</p><p>path: "'+req.url+'"</p><p><a href="http://www.sso-server.com:5566/sso-server/logout">登出</a></p>')
 })
 router.get('/sso-client/logout', function(req, res, next){
-    console.log(1)
     res.clearCookie('connect.sid')
     return res.end()
 })
@@ -79,11 +78,11 @@ router.get('/sso-server/login', function(req, res){
         }
         var url = 'http://' + req.query.site
         
-        res.redirect(url + '?token=' + req.sessionID)
+        return res.redirect(url + '?token=' + req.sessionID)
     }
 
     // 如果没登录过，返回登录页面
-    res.render('login', {error: null})
+    return res.render('login', {error: null})
 })
 
 router.post('/sso-server/login', function(req, res, next){
@@ -91,7 +90,6 @@ router.post('/sso-server/login', function(req, res, next){
     if(req.body.username === user.name && req.body.password === user.password){
         // 设置全局session   
         req.session.isLogin = true
-        res.cookie('connect.sid', req.sessionid, {signed: true, maxAge: 1000*60*10, httpOnly: true, secure: true, sameSite: 'strict'})
         
         if(req.headers.referer.split('?site=')[1]){
             var url = 'http://' + req.headers.referer.split('?site=')[1]
