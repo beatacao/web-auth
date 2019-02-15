@@ -111,7 +111,7 @@ router.get('/sso-server/logout', function(req, res, next){
     subSites.forEach(function(host){
         axios.get('http://' + host + ':5566/sso-client/logout')
     })
-    res.end('已登出')
+    res.render('sso-logout')
 })
 
 module.exports = router
