@@ -89,31 +89,23 @@
 > 流程  
 ![token](./token.png) 
 
-> 优势   
-> 1. 无状态：服务器不保存信息，易扩展，便于分布式集群认证   
-> 2. 存储和传输的多样性： 可跨域；防止CRSF攻击；更适合移动端   
-> 3. 性能： 一次网络往返时间（通过数据库查询session信息）总比做一次HMACSHA256计算 的Token验证和解析要费时得多   
-> 4. 标准化（JSON WEB TOKEN）
+> 优势同时也是劣势    
+```
+    最大的特点：无状态，所以服务端只签发和验证，不保存用户状态信息   
+    劣势：因为无状态，一旦签发，在有效期内，无法通过服务端真正使得token失效；无法很好的管理用户会话状态    
+    比较适合的场景： 一次性验证（例：激活账号）   
+    由于对用户会话机制的难以管理，不推荐代替 session       
+```
 
-> 劣势  
-1. 用户登录验证过程，用户名和密码在网络中传输时，建议使用 HTTPS   
-2. TOKEN 一旦生成并发送到客户端，在有效期内，无法通过服务器端指导客户端删除：缩短token有效时间   
-3. 重放攻击：缩短token 有效时间   
-4. 中间人攻击： token 通过 HTTPS 传输   
-5. 无法在服务器进行用户管理：统计、追踪用户   
-6. token 大小难以控制    
 
 > jwt  
 > 1. 默认使用 HS256 算法： 对称加密   
 > 2. 可以选择使用 RS256 算法： 非对称加密；私钥用于签发token, 公钥用于验证   
 
 
-## 应用场景及常见解决方案  
+## 应用场景demo    
 
 1、单应用     
-
-    简单应用，无集群同步：session    
-    复杂应用，多级群同步： 
 
 2、多应用: 系统的复杂性，不能让用户承担     
 
@@ -135,9 +127,11 @@ sso: 抽离出各个系统的用户认证服务，形成独立的认证中心，
 
 
 
-参考列表：   
+================================================ separator ================================================ 
 
-http认证： 基本认证，摘要认证  
+## 参考列表：   
+
+> http认证： 基本认证，摘要认证  
 
     基本认证： 
 
@@ -158,7 +152,7 @@ http认证： 基本认证，摘要认证
     https://www.hackingarticles.in/understanding-http-authentication-basic-digest/
 
 
-cookie/session/token 
+> cookie/session/token 
 
     参考：   
     https://abigaleyu.co/2017/07/28/cookie-session-token/    
@@ -170,7 +164,7 @@ cookie/session/token
     https://macsalvation.net/2017/11/29/understand-express-session/   express-session 执行流程
 
 
-jwt
+> jwt
 
     参考：   
     https://ninghao.net/blog/2834    
@@ -180,30 +174,20 @@ jwt
     https://juejin.im/entry/5993a030f265da24941202c2    并不是每种场景都适用jwt   
 
 
-oauth   
+> oauth   
 
     参考：  
     https://www.xncoding.com/2017/03/29/web/oauth2.html  
     https://www.jianshu.com/p/a047176d9d65   
 
 
-sso:    
+> sso:    
 
     https://www.cnblogs.com/lyzg/p/6132801.html   
     https://www.cnblogs.com/ywlaker/p/6113927.html    
 
-    demo 演示；taobao等网站例子    
+> 其他基础知识参考：    
 
-sso 方案： （同域，跨域，子应用受信任，子应用不受信任）   
-cas
-
-
-demo 参考：   
-
-https://www.cnblogs.com/chyingp/p/nodejs-learning-crypto-theory.html   
-
-其他基础知识参考：    
-
-Base64:    
-    https://zh.wikipedia.org/wiki/Base64    
-    http://www.ruanyifeng.com/blog/2008/06/base64.html    
+    Base64:    
+        https://zh.wikipedia.org/wiki/Base64    
+        http://www.ruanyifeng.com/blog/2008/06/base64.html    

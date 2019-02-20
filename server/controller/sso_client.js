@@ -21,7 +21,7 @@ module.exports = {
                     })
                     isAuthed = result.data.success
                 }catch(err){
-                    console.log('error')
+                    console.log(err)
                     return next(err)
                 }
             }
@@ -36,7 +36,7 @@ module.exports = {
                 }
             }
             var url = req.headers.host + req.path + (query.length>0 ?  '?' + query : '')
-            return res.redirect('http://www.sso-server.com:5566/sso-server/login?site=' + url)
+            return res.redirect('http://www.sso-server.com:5566/sso-server/login?service=http://' + url)
         }
     }
 }

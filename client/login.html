@@ -13,7 +13,8 @@
     <script src='https://unpkg.com/axios/dist/axios.min.js'></script>
     <script>
     function login(){
-      axios.post('/login', {
+      var url = location.pathname.indexOf('/sso-server') > -1 ? '/sso-server/login' : '/login'
+      axios.post(url, {
         username: document.getElementsByName('username')[0].value,
         password: document.getElementsByName('password')[0].value
       }).then(function(res){
@@ -31,7 +32,9 @@
             query[item.split('=')[0]] = item.split('=')[1]
           }
         })
-        location.href = query['service']
+        var separator = (query['service'].indexOf('?') > -1 ? '&' : '?')
+        var token = res.data['sso-token'] ? separator + 'token=' + res.data['sso-token'] : ''
+        location.href = query['service'] + token
       })
     }
     </script>
