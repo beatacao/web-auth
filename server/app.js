@@ -11,6 +11,7 @@ app.use(cookieParser('site_secret'))
 app.use(session({
     secret: 'site_secret',
     resave: false,
+    rolling: true,
     saveUninitialized: true,
     cookie: {
         maxAge: 6*60*60*1000

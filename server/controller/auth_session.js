@@ -3,7 +3,7 @@ var service_user = require('../service/users')
 module.exports = {
     session: function(req, res, next){
         if(!req.session.user){
-            res.render('login', {error: null})
+            res.redirect('login?service=http://' + req.headers.host  + req.url)
         }
         next()
     },

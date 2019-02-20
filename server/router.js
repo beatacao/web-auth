@@ -23,22 +23,38 @@ router.get('/comments', auth_session.session, function(req, res){
     res.end('comments')
 })
 
-router.get('/photos', auth_token.tokenVerify, function(req, res){
-    res.end('photos')
+router.get('/photopage', function(req, res){
+    res.render('photopage')
+})
+
+router.get('/photos', function(req, res, next){
+    var isAuthorized = auth_token.tokenVerify(req, res, next)
+    if(isAuthorized){
+        res.json({
+            success: true, 
+            data: ['photo1', 'photo2']
+        })
+    }else{
+        res.json({success: false, code: 401})
+    }
+})
+
+router.get('/login', function(req, res, next){
+    res.render('login')
 })
 
 router.post('/login', function(req, res, next){
     var user = service_user.getUsers(req.body.username)
     if(req.body.username === user.name && req.body.password === user.password){
+        var signedToken 
         if(req.headers.referer.indexOf('/comments') > -1){
             auth_session.sessionGenerate(req, res, next)
+        }else if(req.headers.referer.indexOf('/photopage') > -1){
+            signedToken = auth_token.tokenSign(req, res, next)
         }
-        if(req.headers.referer.indexOf('/photos') > -1){
-            auth_token.tokenSign(req, res, next)
-        }
-        res.redirect(req.headers.referer)
+        res.json({success: true, token: signedToken})
     }else{
-        res.render('login', {'error': '密码错误'})
+        res.json({success :false, error: '密码错误'})
     }
 })
 
@@ -67,6 +83,7 @@ router.get('/sso-client/logout', function(req, res, next){
     res.clearCookie('connect.sid')
     return res.end()
 })
+
 
 // sso server
 router.get('/sso-server/login', function(req, res){

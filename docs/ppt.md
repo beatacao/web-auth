@@ -1,4 +1,6 @@
-# web 身份验证   
+# web 身份验证（浏览器/服务器）      
+
+    只是鉴权授权一个小分支的基础知识。     
 
 ## 为什么需要身份验证   
 
@@ -7,12 +9,12 @@
 ## 认证基本方法及优缺点  
 
     1、http 认证   
-    2、cookie/session/token（jwt）   
+    2、cookie/session/token（jwt）        
 
 ### HTTP 认证
 
 #### 基本认证   
-> 关键技术  
+> 加密要点：     
 > base64(用户名:口令)   
 
 > 流程   
@@ -27,8 +29,13 @@
 > 3. 无登出机制；浏览器会缓存登录信息，但没有一种机制用于服务器指导客户端丢弃缓存信息。（手动清浏览器缓存数据、关闭浏览器或用错误的认证信息替换掉已有的认证信息）
 
 #### 摘要认证   
-> 关键技术  
-> 随机数（cnonce, nonce）；md5不可逆哈希加密；不直接在网络传输敏感信息，传输不可逆加密后的摘要信息；
+> 加密要点：     
+> 随机数（cnonce, nonce）；客户端生成随机数计数器；md5不可逆哈希加密；不直接在网络传输敏感信息，传输不可逆加密后的摘要信息； 
+```
+    HA1 = MD5(username:realm:password)
+    HA2 = MD5(method:digestURI)
+    response = MD5(HA1:nonce:nc:cnonce:qop:HA2)
+```
 
 > 流程：和基本认证流程一致；不同的是，头部信息多了加密算法和随机数的设定；
 
@@ -36,14 +43,14 @@
 > 1. 客户端和服务器之间的传输和验证，都是摘要形式，不直接使用明文密码，因此可以实现密码加密存储；  
 > 2. 有客户端随机数（cnonce 防止选择明文攻击，彩虹表）和服务器随机数可以包含时间戳（nonce 防止重放攻击）  
 
-> 劣势
+> 劣势   
 > 1. 没有客户端验证服务器的机制，容易收到中间人攻击   
 > 2. 本身设计意图是取代基本认证，并没有取代强认证协议的设计   
 > 3. 和基础认证一样，无登出机制  
 
 > 可替代：   
 > 1. 强认证协议：公共密码学等    
-> 2. 基本认证 + https 传输
+> 2. 基本认证 + https 传输    
 
 ### cookie/session/token    
 
@@ -59,7 +66,9 @@
 
 > 劣势  
 > cookie 容易被盗取和篡改  
-> 放篡改： 签名
+> 不能跨域   
+> 原生移动端应用不支持cookie   
+> 防篡改： 签名  
 
 > session   
 > 关键技术点： 
@@ -71,9 +80,7 @@
 
 > 劣势   
 > 1. 服务器需要保存状态   
-> 2. 分布式集群同步session   
-> 3. 跨域，因为需要cookie 保存sessionid    
-> 4. cookie 原生移动端应用不支持cookie      
+> 2. 分布式集群同步session       
 
 > token(jwt)    
 > 关键技术点： JSON, base64Url, 签名算法   
@@ -159,7 +166,8 @@ cookie/session/token
     https://www.jianshu.com/p/c33f5777c2eb    cookie/session: 有状态（服务器或浏览器端需要一直保存状态），token无状态  
     https://blog.csdn.net/Jmilk/article/details/55686267   session，token优缺点   
     https://segmentfault.com/a/1190000013010835#articleHeader0    token无状态的特点，可以做到分离认证；业务服务器不受信的情况下（非对称加密，申请注册）  
-    https://stackoverflow.com/questions/35291573/csrf-protection-with-json-web-tokens   存储方式：localstorage/cookie
+    https://stackoverflow.com/questions/35291573/csrf-protection-with-json-web-tokens   存储方式：localstorage/cookie    
+    https://macsalvation.net/2017/11/29/understand-express-session/   express-session 执行流程
 
 
 jwt
@@ -193,3 +201,9 @@ cas
 demo 参考：   
 
 https://www.cnblogs.com/chyingp/p/nodejs-learning-crypto-theory.html   
+
+其他基础知识参考：    
+
+Base64:    
+    https://zh.wikipedia.org/wiki/Base64    
+    http://www.ruanyifeng.com/blog/2008/06/base64.html    

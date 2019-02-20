@@ -16,15 +16,15 @@ var getDigestInfo = function(auth){
 }
 
 var realmConfig = {
-    basic: 'docs',
-    digest: 'articles'
+    basic: '/docs',
+    digest: '/articles'
 }
 
 module.exports = {
     basic: function(req, res, next){
         var isAuthorized = false
         var authorization = req.headers.authorization
-        if(authorization){
+        if(authorization && authorization.indexOf('Basic ') === 0){
             var username, password
             var encode_basic = authorization.split(' ')[1]
             if(encode_basic){
@@ -47,7 +47,7 @@ module.exports = {
     digest: function(req, res, next){
         var isAuthorized = false
         var authorization = req.headers.authorization
-        if(authorization){
+        if(authorization && authorization.indexOf('Digest ') === 0){
             var digestObj = getDigestInfo(authorization)
             var user = service_user.getUsers(digestObj.username)
             var digestAuthObj = {}

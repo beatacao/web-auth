@@ -4,25 +4,27 @@ var secret = 'site_secret'
 
 module.exports = {
     tokenVerify: function(req, res, next){
-        if(!req.signedCookies['token']){
-            res.render('login', {error: null})
-            return
+        var authorization = req.headers.authorization
+        var isAuthorized = false
+        if(authorization && authorization.indexOf('Bearer ') === 0){
+            var token = authorization.split(' ')[1]
+            jwt.verify(token, secret, function(err, decode){
+                if(err || !decode || !decode.isLogin){
+                    isAuthorized = false
+                }
+                if(decode && decode.isLogin){
+                    isAuthorized = true
+                }
+            })
         }
-        var token = req.signedCookies['token']
-        jwt.verify(token, secret, function(err, decode){
-            if(err){
-                res.render('login', {error: null})
-                return
-            }
-            next()
-        })
+        return isAuthorized
     },
     tokenSign: function(req, res, next){
         var user = service_user.getUsers(req.body.username)  
+        var token 
         if(user.name === req.body.username && user.password === req.body.password){
-            var token = jwt.sign(user, secret, {expiresIn: 60*10})
-            res.cookie('token', token, {signed: true, maxAge: 1000*60*10, httpOnly: true, secure: true, sameSite: 'strict'})
+            token = jwt.sign({username: user.username, isLogin: true}, secret, {expiresIn: 60*10})
         }
-        return true
+        return token
     }
 }

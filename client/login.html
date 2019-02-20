@@ -5,14 +5,35 @@
     <title>login</title>
   </head>
   <body>
-    <form action='login' method='post'>
-        <p><label>用户名：</label><input type="text" name='username' /></p>
-        <p><label>密码：</label><input type="password" name='password' /></p>
-        <input type="button" value='submit' onclick='submit()'/>
-    </form>
-    <% if(error){ %>
-        <%= error %>
-    <% } %>
-    
+    <p><label>用户名：</label><input type="text" name='username' /></p>
+    <p><label>密码：</label><input type="password" name='password' /></p>
+    <input type="button" value='submit' onclick='login()'/>
+
+    <div id="error"></div>
+    <script src='https://unpkg.com/axios/dist/axios.min.js'></script>
+    <script>
+    function login(){
+      axios.post('/login', {
+        username: document.getElementsByName('username')[0].value,
+        password: document.getElementsByName('password')[0].value
+      }).then(function(res){
+        if(res.data && res.data.error){
+          document.getElementById('error').innerText = res.data.error
+          return 
+        }
+        if(res.data && res.data.token){
+          window.localStorage.setItem('token', res.data.token)
+        }
+        var search = location.search.split('?')[1]
+        var query = {}
+        search.split('&').map(function(item){
+          if(item.length>0 && item.split('=')[0].length>0){
+            query[item.split('=')[0]] = item.split('=')[1]
+          }
+        })
+        location.href = query['service']
+      })
+    }
+    </script>
   </body>
 </html>

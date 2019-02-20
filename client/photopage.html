@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>HTTP token 认证</title>
+    <style>
+    #list{
+      margin: 20px 0; 
+    }
+    </style>
+  </head>
+  <body>
+    <button onclick='getphotos()'>click to fetch photos</button>
+    <div id="list"></div>
+    <script src='https://unpkg.com/axios/dist/axios.min.js'></script>
+    <script>
+    function getphotos(){
+        var token = localStorage.getItem('token')
+        if(!token){
+            location.href = 'http://www.coding-demo.com:5566/login?service=' + location.href
+            return
+        }
+        axios.get('/photos', {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        }).then(function(res){
+            var result = res.data
+            if(result.success){
+              document.getElementById('list').innerHTML = result.data.join(',')
+            }else{
+              location.href = 'http://www.coding-demo.com:5566/login?service=' + location.href
+            }
+        })
+    }
+    </script>
+  </body>
+</html>
