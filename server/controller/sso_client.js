@@ -1,7 +1,7 @@
 var http = require('http')
 var axios = require('axios')
-
-var client_token_secret = 'client_token_secret'
+var config = require('../config')
+var client_token_secret = config.client_token_secret
 
 module.exports = {
     verify: () => {

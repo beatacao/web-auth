@@ -72,11 +72,6 @@ router.get('/logout', function(req, res, next){
     });
 })
 
-// sso demo 
-var subSites = [
-    'www.sso-client1.com',
-    'www.sso-client2.com',
-]
 
 // sso client
 router.get(/^\/page\/(.)+$/, sso_client.verify(), function(req, res){
@@ -84,12 +79,13 @@ router.get(/^\/page\/(.)+$/, sso_client.verify(), function(req, res){
 })
 router.get('/sso-client/logout', function(req, res, next){
     req.session.isLogin = false
-    res.clearCookie('connect.sid')
     return res.end()
 })
 
 
 // sso server
+router.get(/\/sso-server\/.+$/,  sso_server.verifyService)
+
 router.get('/sso-server/login', function(req, res){
     
     // 检查是否已从其他系统登录过    
@@ -120,11 +116,6 @@ router.get('/sso-server/verifytoken', sso_server.verifytoken)
 
 router.get('/sso-server/logout', function(req, res, next){
     req.session.isLogin = false
-    res.clearCookie('connect.sid')
-    // 清除子站sessionid
-    // subSites.forEach(function(host){
-    //     axios.get('http://' + host + ':5566/sso-client/logout')
-    // })
     res.render('sso-logout')
 })
 
