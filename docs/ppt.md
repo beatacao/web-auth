@@ -19,10 +19,10 @@
 
 > 流程   
 ![basic1](./basic1.jpg)  
-![basic2](./basic2.jpg)
+![basic2](./basic2.jpg)   
 
 > 优势  
-> 1. 简单，几乎所有流行网页浏览器都支持
+> 1. 简单，几乎所有流行网页浏览器都支持  
 > 劣势   
 > 1. 编码这一步骤的目的并不是安全与隐私，而是为将用户名和口令中的不兼容的字符转换为均与HTTP协议兼容的字符集。
 > 2. 明文传输，对客户端和服务器端传递的信息均无保护机制，有把用户名和密码暴露给第三方的风险，很少在公开访问的网站应用。  
@@ -49,8 +49,7 @@
 > 3. 和基础认证一样，无登出机制  
 
 > 可替代：   
-> 1. 强认证协议：公共密码学等    
-> 2. 基本认证 + https 传输    
+> 1. 强认证协议：公钥密码学等   
 
 ### cookie/session/token    
 
@@ -111,6 +110,7 @@
 
 ```  
 sso: 抽离出各个系统的用户认证服务，形成独立的认证中心，单点登录，单点登出    
+关键点：全局session, 局部session   
 ```
 > 登录流程   
 
@@ -127,67 +127,54 @@ sso: 抽离出各个系统的用户认证服务，形成独立的认证中心，
 
 
 
-================================================ separator ================================================ 
+--- 
 
 ## 参考列表：   
 
 > http认证： 基本认证，摘要认证  
 
-    基本认证： 
-
-        参考：
-        https://zh.wikipedia.org/wiki/HTTP%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81   
-        http://www.cnblogs.com/xiaohuochai/p/6184913.html  
-        http://www.nanodocumet.com/?p=6  
-
-        ps: base64 http协议兼容， 如路由器网页管理接口，没有有效的方式让用户退出？
-
-    摘要认证：    
-
-        参考：
-        https://zh.wikipedia.org/wiki/HTTP%E6%91%98%E8%A6%81%E8%AE%A4%E8%AF%81    
-        https://www.cnblogs.com/xiaohuochai/p/6189065.html
+https://zh.wikipedia.org/wiki/HTTP%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81      
+http://www.cnblogs.com/xiaohuochai/p/6184913.html     
+http://www.nanodocumet.com/?p=6  
+ 
+https://zh.wikipedia.org/wiki/HTTP%E6%91%98%E8%A6%81%E8%AE%A4%E8%AF%81      
+https://www.cnblogs.com/xiaohuochai/p/6189065.html    
+https://www.hackingarticles.in/understanding-http-authentication-basic-digest/    
 
 
-    https://www.hackingarticles.in/understanding-http-authentication-basic-digest/
+> cookie/session/token   
+
+https://abigaleyu.co/2017/07/28/cookie-session-token/    
+https://harttle.land/2015/08/10/cookie-session.html   
+https://www.jianshu.com/p/c33f5777c2eb    
+https://blog.csdn.net/Jmilk/article/details/55686267      
+https://segmentfault.com/a/1190000013010835#articleHeader0   
+https://stackoverflow.com/questions/35291573/csrf-protection-with-json-web-tokens   
+https://macsalvation.net/2017/11/29/understand-express-session/   
 
 
-> cookie/session/token 
+> jwt   
 
-    参考：   
-    https://abigaleyu.co/2017/07/28/cookie-session-token/    
-    https://harttle.land/2015/08/10/cookie-session.html    cookie 容易被篡改；session: 防止篡改，但是被盗用后，可以重放   
-    https://www.jianshu.com/p/c33f5777c2eb    cookie/session: 有状态（服务器或浏览器端需要一直保存状态），token无状态  
-    https://blog.csdn.net/Jmilk/article/details/55686267   session，token优缺点   
-    https://segmentfault.com/a/1190000013010835#articleHeader0    token无状态的特点，可以做到分离认证；业务服务器不受信的情况下（非对称加密，申请注册）  
-    https://stackoverflow.com/questions/35291573/csrf-protection-with-json-web-tokens   存储方式：localstorage/cookie    
-    https://macsalvation.net/2017/11/29/understand-express-session/   express-session 执行流程
-
-
-> jwt
-
-    参考：   
-    https://ninghao.net/blog/2834    
-    http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html     
-    https://bbs.huaweicloud.com/blogs/06607ea7b53211e7b8317ca23e93a891   安全性介绍，demo注意应用  
-    http://blog.didispace.com/learn-how-to-use-jwt-xjf/   
-    https://juejin.im/entry/5993a030f265da24941202c2    并不是每种场景都适用jwt   
+https://ninghao.net/blog/2834    
+http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html     
+https://bbs.huaweicloud.com/blogs/06607ea7b53211e7b8317ca23e93a891   
+http://blog.didispace.com/learn-how-to-use-jwt-xjf/   
+https://juejin.im/entry/5993a030f265da24941202c2     
 
 
 > oauth   
 
-    参考：  
-    https://www.xncoding.com/2017/03/29/web/oauth2.html  
-    https://www.jianshu.com/p/a047176d9d65   
+https://www.xncoding.com/2017/03/29/web/oauth2.html  
+https://www.jianshu.com/p/a047176d9d65   
 
 
 > sso:    
 
-    https://www.cnblogs.com/lyzg/p/6132801.html   
-    https://www.cnblogs.com/ywlaker/p/6113927.html    
+https://www.cnblogs.com/lyzg/p/6132801.html   
+https://www.cnblogs.com/ywlaker/p/6113927.html    
 
 > 其他基础知识参考：    
 
-    Base64:    
-        https://zh.wikipedia.org/wiki/Base64    
-        http://www.ruanyifeng.com/blog/2008/06/base64.html    
+### Base64:    
+https://zh.wikipedia.org/wiki/Base64    
+http://www.ruanyifeng.com/blog/2008/06/base64.html    
