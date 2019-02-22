@@ -146,7 +146,9 @@ sso: 抽离出各个系统的用户认证服务，形成独立的认证中心，
 ![logout](./ssologout.png)   
 
 
-3、开放平台（oAuth）    
+3、oAuth（授权）
+
+    在不提供用户名和密码的情况下，授权第三方访问用户在某些站点的资源；
 
 
 
@@ -199,6 +201,6 @@ https://www.cnblogs.com/lyzg/p/6132801.html
 https://www.cnblogs.com/ywlaker/p/6113927.html    
 
 > 其他基础知识参考： 
- 
+
 https://zh.wikipedia.org/wiki/Base64    
 http://www.ruanyifeng.com/blog/2008/06/base64.html    
